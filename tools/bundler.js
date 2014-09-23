@@ -1212,17 +1212,22 @@ _.extend(JsImage.prototype, {
         var sourceMapBaseName = item.targetPath + ".map";
 
         // Write the source map.
-        loadItem.sourceMap = builder.writeToGeneratedFilename(
+        loadItem.sourceMap = path.join('/jubo/',builder.writeToGeneratedFilename(
           sourceMapBaseName,
           { data: new Buffer(item.sourceMap, 'utf8') }
-        );
+        ));
 
-        loadItem.sourceMapRoot = item.sourceMapRoot;
+        loadItem.sourceMapRoot = path.join('/jubo/',item.sourceMapRoot);
       }
 
       loadItem.path = builder.writeToGeneratedFilename(
         item.targetPath,
         { data: new Buffer(item.source, 'utf8') });
+
+      if(loadItem.path.match(/^packages\//) && 
+          path.basename(loadItem.path) != 'global-imports.js') {
+        loadItem.path = path.join('/jubo/',loadItem.path);
+      }
 
       if (!_.isEmpty(item.assets)) {
         // For package code, static assets go inside a directory inside
